@@ -7,7 +7,8 @@ if __name__ == '__main__':
 
     print('Initiating.')
 
-    # file location of CSV and it's fields
+    # file location of CSV and it's fields 
+    # (UC > 1.04 and UC < 1.25)
     file_loc = 'resources\stocks_uc.csv'
     fields = ['date', 'symbol', 'marketcapname', 'sector']
 
@@ -23,8 +24,11 @@ if __name__ == '__main__':
         # reading csv file
         df = pd.read_csv(file_loc, usecols=fields)
         print('CSV data read into dataframes.')
-        print(df.symbol)
     except Exception as e:
         print('Error while reading data from CSV.' + e)
+
+    # store the symbols into set
+    unique_symbol = set(pd.Series(df.symbol))
+    print(unique_symbol)
 
     print('Exit.')
