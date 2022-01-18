@@ -39,10 +39,26 @@ if __name__ == '__main__':
 
     # filter the records based on `past_n_days`.
     filtered_df = df.loc[(df['date'] >= past_n_date) & (df['date'] <= todays_date)]
-    print(len(filtered_df))
 
-    # store the symbols into set
-    # unique_symbol = set(pd.Series(df.symbol))
-    # print(len(unique_symbol))
+    # fetch unique symbols and store the list of dates against them similiar to hashed table.
+    symbol_dict = {}
+    for index, row in filtered_df.iterrows():
+        # add the symbol if it does not exist.
+        if symbol_dict.get(row['symbol']) is None:
+            symbol_dict[row['symbol']] = []
+        symbol_dict[row['symbol']].append(row['date'])
+
+    # show the hashed table in the form of grid.
+    min_ucs = int(input('Enter the minimum number of UCs for selection: '))
+    for symbol, date_list in symbol_dict.items():
+        # omit if the symbol has less than `min_ucs`.
+        if len(date_list) <= min_ucs:
+            continue
+        # to add apt. padding for the grid.
+        print((symbol + '\t') if (len(symbol) < 8) else symbol, end='\t')
+        for date in date_list:
+            # print(date.strftime('%m/%d'), end=' ')
+            print('*', end=' ')
+        print(end='\n')
 
     print('Exit.')
