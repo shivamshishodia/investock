@@ -44,6 +44,7 @@ if __name__ == '__main__':
 
     # prepare the date range to be filled for every ticker.
     date_range = [todays_date - timedelta(days=x) for x in range(past_n_days)]
+    date_range = sorted(date_range)
 
     # prepare dict for each ticker to store 1 UC, -1 no UC and 0 holiday.
     date_uc_tracker = {}
@@ -59,8 +60,8 @@ if __name__ == '__main__':
 
     # attach date UC tracker with each ticker.
     # {
-    #     "TCIEXP": { datetime.date(2022, 2, 28): -1, datetime.date(2022, 2, 27): -1, datetime.date(2022, 2, 26): -1}, 
-    #     "FELDVR": { datetime.date(2022, 2, 28): -1, datetime.date(2022, 2, 27): -1, datetime.date(2022, 2, 26): -1}
+    #     "TCIEXP": { datetime.date(2022, 2, 26): -1, datetime.date(2022, 2, 27): -1, datetime.date(2022, 2, 28): -1}, 
+    #     "FELDVR": { datetime.date(2022, 2, 26): -1, datetime.date(2022, 2, 27): -1, datetime.date(2022, 2, 28): -1}
     #      ......
     # }
     symbol_dict = {}

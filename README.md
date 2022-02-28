@@ -16,5 +16,4 @@ My experiment with Indian stock markets. Please read the instructions given belo
 
 ## Todo
 
-- Sort date order.
 - Mark holidays.
