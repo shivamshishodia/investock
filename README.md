@@ -13,3 +13,8 @@ My experiment with Indian stock markets. Please read the instructions given belo
 ## CSV Source
 
 - The source of CSVs placed under the `resources` folder is only known to the collaborators.
+
+## Todo
+
+- Sort date order.
+- Mark holidays.

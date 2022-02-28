@@ -40,7 +40,7 @@ if __name__ == '__main__':
     df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y').dt.date
 
     # filter the records based on `past_n_days`.
-    filtered_df = df.loc[(df['date'] >= past_n_date) & (df['date'] <= todays_date)]
+    filtered_df = df.loc[(df['date'] > past_n_date) & (df['date'] <= todays_date)]
 
     # prepare the date range to be filled for every ticker.
     date_range = [todays_date - timedelta(days=x) for x in range(past_n_days)]
@@ -76,17 +76,22 @@ if __name__ == '__main__':
             pass
 
     # show the hashed table in the form of grid.
-    # min_ucs = int(input('Enter the minimum number of UCs for selection: '))
+    min_ucs = int(input('Enter the minimum number of UCs for selection: '))
     for symbol, date_list in symbol_dict.items():
-        # to add apt. padding for the grid.
-        print((symbol + '\t') if (len(symbol) < 8) else symbol, end='\t')
-        for dt, uc in date_list.items():
-            # print(date.strftime('%m/%d'), end=' ')
-            # + for UC and - for no UC.
-            if uc == 1:
-                print(Fore.GREEN + '+', end=' ')
-            else:
-                print(Fore.RED + '-', end=' ')
-        print(Style.RESET_ALL, end='\n')
+        # count the number of UCs.
+        uc_count = sum(x == 1 for x in date_list.values())
+        if uc_count >= min_ucs:
+            # to add apt. padding for the grid.
+            print((symbol + '\t') if (len(symbol) < 8) else symbol, end='\t')
+            for dt, uc in date_list.items():
+                # print(date.strftime('%m/%d'), end=' ')
+                # + for UC and - for no UC.
+                if uc == 1:
+                    print(Fore.GREEN + '+', end=' ')
+                elif uc == -1:
+                    print(Fore.RED + '-', end=' ')
+                else:
+                    print(Fore.WHITE + '.', end=' ')
+            print(Style.RESET_ALL, end='\n')
 
     print('Exit.')
