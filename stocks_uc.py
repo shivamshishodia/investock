@@ -34,31 +34,57 @@ if __name__ == '__main__':
     past_n_days = int(input('Enter the past `n` days for which you want to filter the data for: '))
     past_n_date = (todays_date - timedelta(days=past_n_days))
 
-    # Convert the `date` column in dataframe into datetime64 format.
+    # convert the `date` column in dataframe into datetime64 format.
     df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y').dt.date
 
     # filter the records based on `past_n_days`.
     filtered_df = df.loc[(df['date'] >= past_n_date) & (df['date'] <= todays_date)]
 
-    # fetch unique symbols and store the list of dates against them similiar to hashed table.
-    symbol_dict = {}
+    # prepare the date range to be filled for every ticker.
+    date_range = [todays_date - timedelta(days=x) for x in range(past_n_days)]
+
+    # prepare dict for each ticker to store 1 UC, -1 no UC and 0 holiday.
+    date_uc_tracker = {}
+    for ele in date_range:
+        # all values filled with -1 (UC not hit) initially.
+        date_uc_tracker[ele] = -1 
+
+    # fetch individual tickers.
+    tickers = []
     for index, row in filtered_df.iterrows():
-        # add the symbol if it does not exist.
-        if symbol_dict.get(row['symbol']) is None:
-            symbol_dict[row['symbol']] = []
-        symbol_dict[row['symbol']].append(row['date'])
+        tickers.append(row['symbol'])
+    tickers = list( dict.fromkeys(tickers) )
+
+    # attach date UC tracker with each ticker.
+    # {
+    #     "TCIEXP": { datetime.date(2022, 2, 28): -1, datetime.date(2022, 2, 27): -1, datetime.date(2022, 2, 26): -1}, 
+    #     "FELDVR": { datetime.date(2022, 2, 28): -1, datetime.date(2022, 2, 27): -1, datetime.date(2022, 2, 26): -1}
+    #      ......
+    # }
+    symbol_dict = {}
+    for ticker in tickers:
+        symbol_dict[ticker] = date_uc_tracker.copy()
+
+    # fetch unique symbols and store the list of dates against them similiar to hashed table.
+    for index, row in filtered_df.iterrows():
+        # mark if the UC was hit or not.
+        try:
+            symbol_dict[row['symbol']][row['date']] = 1
+        except KeyError:
+            pass
 
     # show the hashed table in the form of grid.
-    min_ucs = int(input('Enter the minimum number of UCs for selection: '))
+    # min_ucs = int(input('Enter the minimum number of UCs for selection: '))
     for symbol, date_list in symbol_dict.items():
-        # omit if the symbol has less than `min_ucs`.
-        if len(date_list) <= min_ucs:
-            continue
         # to add apt. padding for the grid.
         print((symbol + '\t') if (len(symbol) < 8) else symbol, end='\t')
-        for date in date_list:
+        for dt, uc in date_list.items():
             # print(date.strftime('%m/%d'), end=' ')
-            print('*', end=' ')
+            # * for UC and # for no UC.
+            if uc == 1:
+                print('*', end=' ')
+            else:
+                print('#', end=' ')
         print(end='\n')
 
     print('Exit.')
