@@ -50,6 +50,10 @@ if __name__ == '__main__':
     date_uc_tracker = {}
     for ele in date_range:
         # all values filled with -1 (UC not hit) initially.
+        # holidays marked with 0.
+        if ele.weekday() > 4:
+            date_uc_tracker[ele] = 0
+            continue
         date_uc_tracker[ele] = -1 
 
     # fetch individual tickers.
@@ -92,7 +96,7 @@ if __name__ == '__main__':
                 elif uc == -1:
                     print(Fore.RED + '-', end=' ')
                 else:
-                    print(Fore.WHITE + '.', end=' ')
+                    print(Fore.LIGHTBLACK_EX + '.', end=' ')
             print(Style.RESET_ALL, end='\n')
 
     print('Exit.')
