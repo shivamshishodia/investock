@@ -3,11 +3,13 @@ import os
 import pandas as pd
 
 from datetime import date, timedelta
+from colorama import init, Fore, Back, Style
 
 # main
 if __name__ == '__main__':
 
     print('Initiating.')
+    init()
 
     # file location of CSV and it's fields.
     # (UC > 1.04 and UC < 1.25).
@@ -80,11 +82,11 @@ if __name__ == '__main__':
         print((symbol + '\t') if (len(symbol) < 8) else symbol, end='\t')
         for dt, uc in date_list.items():
             # print(date.strftime('%m/%d'), end=' ')
-            # * for UC and # for no UC.
+            # + for UC and - for no UC.
             if uc == 1:
-                print('*', end=' ')
+                print(Fore.GREEN + '+', end=' ')
             else:
-                print('#', end=' ')
-        print(end='\n')
+                print(Fore.RED + '-', end=' ')
+        print(Style.RESET_ALL, end='\n')
 
     print('Exit.')
