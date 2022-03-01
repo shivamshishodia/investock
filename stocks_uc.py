@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 from datetime import date, timedelta
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
 
 # main
 if __name__ == '__main__':
