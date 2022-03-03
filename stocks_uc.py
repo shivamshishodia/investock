@@ -1,6 +1,7 @@
 # libraries
 import os
 import pandas as pd
+import numpy as np
 
 from datetime import date, timedelta
 from colorama import init, Fore, Style
@@ -10,10 +11,10 @@ from colorama import init, Fore, Style
 def load_csv(file_loc, fields):
 
     # check if the file exists.
-    print('Check if the file exists at: ' + file_loc)
+    print('Checking if the file exists at: ' + file_loc)
     if not os.path.exists(file_loc):
         print('File does not exist at path: ' + file_loc + '. Terminating.')
-        exit(0)
+        quit(0)
     print('File found.')
 
     # read data from csv into panda dataframes.
@@ -42,6 +43,9 @@ if __name__ == '__main__':
 
     # fetch stock data from csv.
     df = load_csv(file_loc, fields)
+
+    # replace nan with NA
+    df.replace(to_replace = np.nan, value ='NA')
 
     # pick only those entries which are no more than `past_n_days` days in past.
     todays_date = date.today() # datetime64 format (2022-01-18).
@@ -117,6 +121,13 @@ if __name__ == '__main__':
                     print(Fore.RED + '-', end=' ')
                 else:
                     print(Fore.LIGHTBLACK_EX + '.', end=' ')
-            print(Style.RESET_ALL, end='\n')
+            print(Style.RESET_ALL, end=' ')
+            # print the industry.
+            sector = filtered_df.loc[filtered_df['symbol'] == symbol].iloc[0]['sector']
+            try:
+                print('\t' + sector, end=' ')
+            except: 
+                pass
+            print(end='\n')
 
     print('Exit.')
