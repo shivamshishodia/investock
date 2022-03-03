@@ -5,6 +5,33 @@ import pandas as pd
 from datetime import date, timedelta
 from colorama import init, Fore, Style
 
+
+# load indian stock market holiday list.
+def stock_holidays():
+    # file location.
+    holiday_file = 'resources\indian_market_holidays_2022.csv'
+    holiday_fields = ['date', 'event']
+
+    # check if the file exists.
+    print('Check if the file exists at: ' + file_loc)
+    if not os.path.exists(file_loc):
+        print('File does not exist at path: ' + file_loc + '. Terminating.')
+        exit(0)
+    print('File found.')
+
+    # read data from csv into panda dataframes.
+    try:
+        # reading csv file.
+        df = pd.read_csv(holiday_file, usecols=holiday_fields)
+        print('CSV data read into dataframes.')
+    except Exception as e:
+        print('Error while reading data from CSV.' + e)
+
+    # convert the `date` column in dataframe into datetime64 format.
+    df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y').dt.date
+    return df
+
+
 # main
 if __name__ == '__main__':
 
@@ -46,14 +73,21 @@ if __name__ == '__main__':
     date_range = [todays_date - timedelta(days=x) for x in range(past_n_days)]
     date_range = sorted(date_range)
 
+    # load indian stock market holiday list.
+    holiday_df = stock_holidays()
+
     # prepare dict for each ticker to store 1 UC, -1 no UC and 0 holiday.
     date_uc_tracker = {}
     for ele in date_range:
-        # all values filled with -1 (UC not hit) initially.
         # holidays marked with 0.
+        if len(holiday_df.loc[holiday_df['date'] == ele]) != 0:
+            date_uc_tracker[ele] = 0
+            continue
+        # weekends marked with 0.
         if ele.weekday() > 4:
             date_uc_tracker[ele] = 0
             continue
+        # all values filled with -1 (UC not hit) initially.
         date_uc_tracker[ele] = -1 
 
     # fetch individual tickers.
