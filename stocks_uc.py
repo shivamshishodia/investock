@@ -6,11 +6,8 @@ from datetime import date, timedelta
 from colorama import init, Fore, Style
 
 
-# load indian stock market holiday list.
-def stock_holidays():
-    # file location.
-    holiday_file = 'resources\indian_market_holidays_2022.csv'
-    holiday_fields = ['date', 'event']
+# load csv files into dataframes.
+def load_csv(file_loc, fields):
 
     # check if the file exists.
     print('Check if the file exists at: ' + file_loc)
@@ -22,7 +19,7 @@ def stock_holidays():
     # read data from csv into panda dataframes.
     try:
         # reading csv file.
-        df = pd.read_csv(holiday_file, usecols=holiday_fields)
+        df = pd.read_csv(file_loc, usecols=fields)
         print('CSV data read into dataframes.')
     except Exception as e:
         print('Error while reading data from CSV.' + e)
@@ -43,28 +40,13 @@ if __name__ == '__main__':
     file_loc = 'resources\stocks_uc.csv'
     fields = ['date', 'symbol', 'marketcapname', 'sector']
 
-    # check if the file exists.
-    print('Check if the file exists at: ' + file_loc)
-    if not os.path.exists(file_loc):
-        print('File does not exist at path: ' + file_loc + '. Terminating.')
-        exit(0)
-    print('File found.')
-
-    # read data from csv into panda dataframes.
-    try:
-        # reading csv file.
-        df = pd.read_csv(file_loc, usecols=fields)
-        print('CSV data read into dataframes.')
-    except Exception as e:
-        print('Error while reading data from CSV.' + e)
+    # fetch stock data from csv.
+    df = load_csv(file_loc, fields)
 
     # pick only those entries which are no more than `past_n_days` days in past.
     todays_date = date.today() # datetime64 format (2022-01-18).
     past_n_days = int(input('Enter the past `n` days for which you want to filter the data for: '))
     past_n_date = (todays_date - timedelta(days=past_n_days))
-
-    # convert the `date` column in dataframe into datetime64 format.
-    df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y').dt.date
 
     # filter the records based on `past_n_days`.
     filtered_df = df.loc[(df['date'] > past_n_date) & (df['date'] <= todays_date)]
@@ -73,8 +55,12 @@ if __name__ == '__main__':
     date_range = [todays_date - timedelta(days=x) for x in range(past_n_days)]
     date_range = sorted(date_range)
 
-    # load indian stock market holiday list.
-    holiday_df = stock_holidays()
+    # holiday file location and headers.
+    holiday_file = 'resources\indian_market_holidays_2022.csv'
+    holiday_fields = ['date', 'event']
+
+    # fetch holiday data from csv.
+    holiday_df = load_csv(holiday_file, holiday_fields)
 
     # prepare dict for each ticker to store 1 UC, -1 no UC and 0 holiday.
     date_uc_tracker = {}
