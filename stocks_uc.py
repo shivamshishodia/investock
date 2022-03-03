@@ -106,6 +106,9 @@ if __name__ == '__main__':
 
     # show the hashed table in the form of grid.
     min_ucs = int(input('Enter the minimum number of UCs for selection: '))
+
+    print(Fore.GREEN + 'From ' + past_n_date.strftime('%d/%m/%Y') + ' to ' + todays_date.strftime('%d/%m/%Y') + Style.RESET_ALL)
+
     for symbol, date_list in symbol_dict.items():
         # count the number of UCs.
         uc_count = sum(x == 1 for x in date_list.values())
@@ -127,7 +130,9 @@ if __name__ == '__main__':
             try:
                 print('\t' + sector, end=' ')
             except: 
-                pass
+                print('\tNA', end=' ')
             print(end='\n')
+
+    print(Fore.RED + '[- does not signify lower circuit.]' + Style.RESET_ALL)
 
     print('Exit.')
