@@ -55,7 +55,7 @@ def download_csv(file_loc):
         # run scan
         run_btn = driver.find_element_by_xpath('//*[@id="root"]/div[2]/div/div/div/div[2]/div/div[2]/div[2]/div[1]/button[1]')
         run_btn.click()
-        time.sleep(4)
+        time.sleep(10)
 
         # download the csv.
         download_btn = driver.find_element_by_xpath('//*[@id="backtest-container"]/div[2]/a')
