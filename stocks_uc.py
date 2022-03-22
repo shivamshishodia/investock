@@ -45,6 +45,7 @@ if __name__ == '__main__':
     fields = ['date', 'symbol', 'marketcapname', 'sector']
 
     # download and rename csv.
+    print(Fore.GREEN + 'Downloading source csv. This may take few seconds.' + Style.RESET_ALL)
     if not download_csv(file_loc):
         print(Fore.RED + 'Unable to download source csv.' + Style.RESET_ALL)
         quit(0)
