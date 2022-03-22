@@ -1,2 +1,8 @@
 # resources
 /resources/stocks_uc.csv
+
+# driver (download from https://chromedriver.chromium.org/downloads)
+/driver/chromedriver.exe
+
+# cache
+/__pycache__

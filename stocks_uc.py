@@ -6,6 +6,9 @@ import numpy as np
 from datetime import date, timedelta
 from colorama import init, Fore, Style
 
+# helpers
+from stocks_uc_helper import download_csv, rename_csv
+
 
 # load csv files into dataframes.
 def load_csv(file_loc, fields):
@@ -40,6 +43,17 @@ if __name__ == '__main__':
     # (UC > 1.04 and UC < 1.25).
     file_loc = 'resources\stocks_uc.csv'
     fields = ['date', 'symbol', 'marketcapname', 'sector']
+
+    # download and rename csv.
+    if not download_csv(file_loc):
+        print(Fore.RED + 'Unable to download source csv.' + Style.RESET_ALL)
+        quit(0)
+    
+    if not rename_csv(file_loc):
+        print(Fore.RED + 'Unable to rename the downloaded source csv.' + Style.RESET_ALL)
+        quit(0)
+
+    print(Fore.GREEN + 'Source file downloaded.' + Style.RESET_ALL)
 
     # fetch stock data from csv.
     df = load_csv(file_loc, fields)
